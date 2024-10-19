@@ -56,10 +56,7 @@ model Match {
 
   stadium     Stadium  @relation("MatchStadium", fields: [stadiumId], references: [id])
   stadiumId   String
-
-  referee     Referee  @relation("MatchReferee", fields: [refereeId], references: [id])
-  refereeId   String
-  
+  referee     String
   matchDetails       MatchDetails?    
   championship  Championship @relation(fields: [championshipId], references: [id])
   championshipId String
@@ -99,15 +96,6 @@ model Stadium {
   matches   Match[]  @relation("MatchStadium")
   team_id   String @unique
   team      Team @relation(fields: [team_id], references: [id])
-}
-
-model Referee {
-  id            String      @id
-  name          String
-  nationality   String
-
-  matches   Match[]  @relation("MatchReferee")
-
 }
 
 model Player {
