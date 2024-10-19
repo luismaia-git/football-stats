@@ -1,0 +1,159 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Championship {
+  id          String    @id
+  name        String
+  season      String
+  standings   Standing[]
+  matchs      Match[]
+}
+
+model Standing {
+  id              String    @id
+  team            Team      @relation(fields: [teamId], references: [id])
+  teamId          String
+  championship    Championship @relation(fields: [championshipId], references: [id])
+  championshipId  String
+  points          Int      @default(0)
+  wins            Int      @default(0)
+  draws           Int      @default(0)
+  loses           Int      @default(0)
+}
+
+
+model MatchDetails {
+  id          String    @id
+  homeScore   Int
+  awayScore   Int
+  injuredPlayers Player[]
+  matchId      String    @unique
+  Match        Match  @relation(fields: [matchId], references: [id])
+  performance Performance []
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Match {
+  id          String    @id
+  date        DateTime
+  homeTeam    Team     @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  homeTeamId  String
+  awayTeam    Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  awayTeamId  String
+
+  stadium     Stadium  @relation("MatchStadium", fields: [stadiumId], references: [id])
+  stadiumId   String
+
+  referee     Referee  @relation("MatchReferee", fields: [refereeId], references: [id])
+  refereeId   String
+  
+  matchDetails       MatchDetails?    
+  championship  Championship @relation(fields: [championshipId], references: [id])
+  championshipId String
+  
+  @@unique([homeTeamId, awayTeamId, date])
+  @@index([awayTeamId, homeTeamId])
+}
+
+model Team {
+  id          String    @id
+  name        String    @unique
+  city        String
+  stadium     Stadium[]   
+  homeGames   Match[]  @relation("HomeTeam")
+  awayGames   Match[]  @relation("AwayTeam")
+  players     PlayerTeam[]
+  standing    Standing[]
+}
+
+model PlayerTeam {
+  id        String   @id 
+  player    Player   @relation(fields: [playerId], references: [id])
+  playerId  String
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    String
+  from      DateTime
+  until     DateTime?
+  @@unique([playerId, teamId, from])
+}
+
+model Stadium {
+  id        String      @id
+  name      String
+  location  String
+  capacity  Int
+
+  matches   Match[]  @relation("MatchStadium")
+  team_id   String @unique
+  team      Team @relation(fields: [team_id], references: [id])
+}
+
+model Referee {
+  id            String      @id
+  name          String
+  nationality   String
+
+  matches   Match[]  @relation("MatchReferee")
+
+}
+
+model Player {
+  id          String    @id
+  name        String
+  teams       PlayerTeam[]
+  teamId      String
+  position    String
+  
+  matchDetails MatchDetails[]
+  injuries Injured[]
+  performance Performance[]
+}
+
+
+model Injured {
+  id          String      @id 
+  description String
+  player      Player      @relation(fields: [playerId], references: [id])
+  playerId    String
+  date        DateTime
+}
+
+
+model Performance {
+  id                String      @id 
+  player            Player  @relation(fields: [playerId], references: [id])
+  playerId          String
+  matchDetails      MatchDetails  @relation(fields: [matchDetailsId], references: [id])
+  matchDetailsId    String
+  minutesPlayed     Int
+  gols              Int     @default(0)
+  assist            Int     @default(0)
+  yellowCards       Int     @default(0)
+  redCards          Int     @default(0)
+
+  participationType  ParticipationType 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+   @@index([playerId])
+}
+
+enum ParticipationType {
+  STARTER
+  SUBSTITUTE
+  DID_NOT_PLAY
+}
