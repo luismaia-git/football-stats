@@ -13,12 +13,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Championship {
+model Championship { //
   id          String    @id
   name        String
   season      String
   standings   Standing[]
   matchs      Match[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Standing {
@@ -31,38 +34,68 @@ model Standing {
   wins            Int      @default(0)
   draws           Int      @default(0)
   loses           Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 
-model MatchDetails {
-  id          String    @id
-  homeScore   Int
-  awayScore   Int
-  injuredPlayers Player[]
-  matchId      String    @unique
-  Match        Match  @relation(fields: [matchId], references: [id])
-  performance Performance []
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+// model MatchDetails {
+//   id          String    @id
+//   injuredPlayers Player[]
+//   matchId      String    @unique
+//   Match        Match  @relation(fields: [matchId], references: [id])
+  
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+// }
+
+model MatchStatistics {
+  id        String   @id @default(cuid())
+  matchId   String
+  teamId    String
+  possessionPercentage Float  // Percentual de posse de bola
+  goals     Int
+  yellowCards Int
+  redCards   Int
+  formation    String
+  captain String
+  result  String
+
+  
+  match     Match    @relation(fields: [matchId], references: [id])
+  team      Team     @relation(fields: [teamId], references: [id])
+
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([matchId, teamId]) // Garantir que um time tenha uma única estatística por partida
 }
 
 model Match {
   id          String    @id
+  round       String
   date        DateTime
   homeTeam    Team     @relation("HomeTeam", fields: [homeTeamId], references: [id])
   homeTeamId  String
   awayTeam    Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
   awayTeamId  String
-
   stadium     Stadium  @relation("MatchStadium", fields: [stadiumId], references: [id])
   stadiumId   String
   referee     String
-  matchDetails       MatchDetails?    
+  // matchDetails       MatchDetails?    
   championship  Championship @relation(fields: [championshipId], references: [id])
   championshipId String
-  
+  performance Performance []
+  statistics     MatchStatistics[]
+  injured Injured[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@unique([homeTeamId, awayTeamId, date])
-  @@index([awayTeamId, homeTeamId])
+  @@index([awayTeamId, homeTeamId, date, referee])
+
 }
 
 model Team {
@@ -74,6 +107,11 @@ model Team {
   awayGames   Match[]  @relation("AwayTeam")
   players     PlayerTeam[]
   standing    Standing[]
+
+  matchStatistics MatchStatistics[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PlayerTeam {
@@ -85,6 +123,9 @@ model PlayerTeam {
   from      DateTime
   until     DateTime?
   @@unique([playerId, teamId, from])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Stadium {
@@ -94,8 +135,11 @@ model Stadium {
   capacity  Int
 
   matches   Match[]  @relation("MatchStadium")
-  team_id   String @unique
-  team      Team @relation(fields: [team_id], references: [id])
+  teamId   String @unique
+  team      Team @relation(fields: [teamId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Player {
@@ -105,9 +149,12 @@ model Player {
   teamId      String
   position    String
   
-  matchDetails MatchDetails[]
+  //matchDetails MatchDetails[]
   injuries Injured[]
   performance Performance[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 
@@ -116,28 +163,33 @@ model Injured {
   description String
   player      Player      @relation(fields: [playerId], references: [id])
   playerId    String
+  matchId     String?
+  match       Match?      @relation(fields: [matchId], references: [id])
   date        DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 
 model Performance {
   id                String      @id 
-  player            Player  @relation(fields: [playerId], references: [id])
   playerId          String
-  matchDetails      MatchDetails  @relation(fields: [matchDetailsId], references: [id])
-  matchDetailsId    String
+  matchId   String
   minutesPlayed     Int
   gols              Int     @default(0)
   assist            Int     @default(0)
   yellowCards       Int     @default(0)
   redCards          Int     @default(0)
 
+  match    Match @relation(fields: [matchId],  references: [id])
   participationType  ParticipationType 
-
+  player            Player  @relation(fields: [playerId], references: [id])
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-   @@index([playerId])
+   @@index([matchId])
 }
 
 enum ParticipationType {

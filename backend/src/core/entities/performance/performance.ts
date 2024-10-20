@@ -1,30 +1,25 @@
 import { UniqueEntityID } from "../unique-entity-id";
 import { Optional } from "../types/optional";
 import { Entity } from "../entity";
-import { Player } from "../player/player";
-
-export enum ParticipationType {
-  STARTER = "STARTER",
-  SUBSTITUTE = "SUBSTITUTE",
-  DID_NOT_PLAY = "DID_NOT_PLAY",
-}
-
+import { ParticipationType as ParticipationTypePrisma } from "@prisma/client";
 export interface PerformanceProps {
   playerId: string;
-  matchDetailsId: string;
+  matchId: string;
   minutesPlayed: number;
   gols: number;
   assist: number;
   yellowCards: number;
   redCards: number;
   participationType: ParticipationType;
-  createdAt:   Date
-  updatedAt:   Date
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export class Performance extends Entity<PerformanceProps> {
-  
-  static create(props: Optional<PerformanceProps, 'createdAt'>, id?: UniqueEntityID) {
+  static create(
+    props: Optional<PerformanceProps, "createdAt">,
+    id?: UniqueEntityID,
+  ) {
     const entity = new Performance(
       { ...props, createdAt: props.createdAt ?? new Date() },
       id,
@@ -40,12 +35,12 @@ export class Performance extends Entity<PerformanceProps> {
     this.props.playerId = playerId;
   }
 
-  public get matchDetailsId(): string {
-    return this.props.matchDetailsId;
+  public get matchId(): string {
+    return this.props.matchId;
   }
 
-  public set matchDetailsId(matchDetailsId: string) {
-    this.props.matchDetailsId = matchDetailsId;
+  public set matchId(matchId: string) {
+    this.props.matchId = matchId;
   }
 
   public get minutesPlayed(): number {
@@ -96,8 +91,6 @@ export class Performance extends Entity<PerformanceProps> {
     this.props.participationType = type;
   }
 
-
-
   public get createdAt(): Date {
     return this.props.createdAt;
   }
@@ -109,5 +102,26 @@ export class Performance extends Entity<PerformanceProps> {
   public set updatedAt(updatedAt: Date) {
     this.props.updatedAt = updatedAt;
   }
+}
 
+export enum ParticipationType {
+  STARTER = "STARTER",
+  SUBSTITUTE = "SUBSTITUTE",
+  DID_NOT_PLAY = "DID_NOT_PLAY",
+}
+
+// Mapeamento de enum do Prisma para enum do TypeScript
+export function mapParticipationType(
+  type: ParticipationTypePrisma,
+): ParticipationType {
+  switch (type) {
+    case "STARTER":
+      return ParticipationType.STARTER;
+    case "SUBSTITUTE":
+      return ParticipationType.SUBSTITUTE;
+    case "DID_NOT_PLAY":
+      return ParticipationType.DID_NOT_PLAY;
+    default:
+      throw new Error(`Unknown ParticipationType: ${type}`);
+  }
 }

@@ -1,28 +1,29 @@
-import { UniqueEntityID } from '../unique-entity-id';
-import { Optional } from '../types/optional';
-import { Entity } from '../entity';
-import { Stadium } from '../stadium/stadium';
-import { Championship } from '../championship/championship';
-import { Team } from '../team/team';
-import { Player } from '../player/player';
+import { UniqueEntityID } from "../unique-entity-id";
+import { Optional } from "../types/optional";
+import { Entity } from "../entity";
+import { Stadium } from "../stadium/stadium";
+import { Championship } from "../championship/championship";
+import { MatchStatistics } from "../match-statistics/match-statistics";
+import { Injured } from "./injured";
+import { Performance } from "../performance/performance";
 
 export interface MatchProps {
   date: Date;
-  homeTeam: Team;
-  awayTeam: Team;
-  stadium: Stadium;
+  round: string;
+  homeTeamId: string;
+  awayTeamId: string;
   referee: string;
   championship: Championship;
-  homeScore?: number;
-  awayScore?: number;
-  injuredPlayers: Player[];
+  statistics: MatchStatistics[];
   performance: Performance[];
+  injuredPlayers: Injured[];
+  stadium: Stadium;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export class Match extends Entity<MatchProps> {
-  static create(props: Optional<MatchProps, 'createdAt'>, id?: UniqueEntityID) {
+  static create(props: Optional<MatchProps, "createdAt">, id?: UniqueEntityID) {
     const entity = new Match(
       { ...props, createdAt: props.createdAt ?? new Date() },
       id,
@@ -42,6 +43,14 @@ export class Match extends Entity<MatchProps> {
     this.props.updatedAt = updatedAt;
   }
 
+  public get round(): string {
+    return this.props.round;
+  }
+
+  public set round(round: string) {
+    this.props.round = round;
+  }
+
   public get date(): Date {
     return this.props.date;
   }
@@ -50,20 +59,20 @@ export class Match extends Entity<MatchProps> {
     this.props.date = date;
   }
 
-  public get homeTeam(): Team {
-    return this.props.homeTeam;
+  public get homeTeamId(): string {
+    return this.props.homeTeamId;
   }
 
-  public set homeTeam(homeTeam: Team) {
-    this.props.homeTeam = homeTeam;
+  public set homeTeamId(homeTeamId: string) {
+    this.props.homeTeamId = homeTeamId;
   }
 
-  public get awayTeam(): Team {
-    return this.props.awayTeam;
+  public get awayTeamId(): string {
+    return this.props.awayTeamId;
   }
 
-  public set awayTeam(awayTeam: Team) {
-    this.props.awayTeam = awayTeam;
+  public set awayTeamId(awayTeamId: string) {
+    this.props.awayTeamId = awayTeamId;
   }
 
   public get stadium(): Stadium {
@@ -90,29 +99,7 @@ export class Match extends Entity<MatchProps> {
     this.props.championship = championship;
   }
 
-  public get homeScore(): number {
-    return this.props.homeScore;
-  }
-
-  public set homeScore(score: number) {
-    if (score < 0) {
-      throw new Error('Score cannot be negative.');
-    }
-    this.props.homeScore = score;
-  }
-
-  public get awayScore(): number {
-    return this.props.awayScore;
-  }
-
-  public set awayScore(score: number) {
-    if (score < 0) {
-      throw new Error('Score cannot be negative.');
-    }
-    this.props.awayScore = score;
-  }
-
-  public get injuredPlayers(): Player[] {
+  public get injuredPlayers(): Injured[] {
     return [...this.props.injuredPlayers];
   }
 
@@ -122,21 +109,32 @@ export class Match extends Entity<MatchProps> {
 
   // Calcula o total de gols
   public get totalGoals(): number {
-    return (this.homeScore ?? 0) + (this.awayScore ?? 0);
+    return (this.statistics[0]?.goals ?? 0) + (this.statistics[1]?.goals ?? 0);
   }
 
   // Adiciona um jogador lesionado
-  public addInjuredPlayer(player: Player): void {
-    this.injuredPlayers.push(player);
+  public addInjuredPlayer(injured: Injured): void {
+    this.injuredPlayers.push(injured);
   }
 
-  public get winner(): Team | null {
-    if (this.homeScore > this.awayScore) return this.homeTeam;
-    if (this.awayScore > this.homeScore) return this.awayTeam;
+  public get winner(): string | null {
+    if (this.statistics[0]?.goals > this.statistics[1]?.goals)
+      return this.homeTeamId;
+    if (this.statistics[1]?.goals > this.statistics[0]?.goals)
+      return this.awayTeamId;
     return null;
   }
 
-  public wasPlayerInjured(player: Player): boolean {
-    return this.injuredPlayers.includes(player);
+  public wasPlayerInjured(playerId: string): boolean {
+    const wasPlayerInjured = this.injuredPlayers.find(
+      (injured) => injured.playerId === playerId,
+    );
+    if (wasPlayerInjured) return true;
+
+    return false;
+  }
+
+  public get statistics() {
+    return this.props.statistics;
   }
 }

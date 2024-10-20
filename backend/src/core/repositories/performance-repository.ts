@@ -1,8 +1,9 @@
-
-import { ParticipationType, Performance } from "../entities/performance/performance";
+import {
+  ParticipationType,
+  Performance,
+} from "../entities/performance/performance";
 
 export abstract class PerformancesRepository {
-
   abstract create(performance: Performance): Promise<void>;
 
   abstract findById(performanceId: string): Promise<Performance | null>;
@@ -21,8 +22,13 @@ export abstract class PerformancesRepository {
   abstract findManyByTeamId(teamId: string): Promise<Performance[]>; // Obter o desempenho de um time em várias partidas
 
   // Busca desempenhos dentro de um intervalo de datas (por exemplo, para análise de desempenho em um período específico)
-  abstract findManyByDateRange(startDate: Date, endDate: Date): Promise<Performance[]>; // Para análises mais avançadas
+  abstract findManyByDateRange(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<Performance[]>; // Para análises mais avançadas
 
   // Busca desempenhos filtrados por tipo de participação (starter, substitute, did not play)
-  abstract findManyByParticipationType(participationType: ParticipationType): Promise<Performance[]>; // Para análises específicas de participação
+  abstract findManyByParticipationType(
+    participationType: ParticipationType,
+  ): Promise<Performance[]>; // Para análises específicas de participação
 }

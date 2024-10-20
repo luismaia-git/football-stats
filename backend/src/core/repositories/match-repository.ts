@@ -10,5 +10,4 @@ export abstract class MatchsRepository {
   abstract findManyByChampionshipId(championshipId: string): Promise<Match[]>;
 
   abstract delete(matchId: string): Promise<void>;
-  
 }

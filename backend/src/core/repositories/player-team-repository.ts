@@ -12,5 +12,4 @@ export abstract class PlayerTeamsRepository {
 
   abstract findByFromDate(fromDate: Date): Promise<PlayerTeam[]>;
   abstract findByUntilDate(untilDate: Date): Promise<PlayerTeam[]>;
-  
 }

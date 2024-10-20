@@ -1,37 +1,37 @@
-import { Championship } from '../championship/championship';
-import { Stadium } from '../stadium/stadium';
-import { Team } from '../team/team';
-import { Match } from './match';
+import { Championship } from "../championship/championship";
+import { Stadium } from "../stadium/stadium";
+import { Team } from "../team/team";
+import { Match } from "./match";
 
-describe('Match', () => {
-  it('should be able to create a match', () => {
+describe("Match", () => {
+  it("should be able to create a match", () => {
     const homeTeam = Team.create({
-      name: 'home-team',
-      city: 'some-city',
+      name: "home-team",
+      city: "some-city",
       players: [],
       stadium: [],
       updatedAt: new Date(),
     });
 
     const awayTeam = Team.create({
-      name: 'away-team',
-      city: 'some-city',
+      name: "away-team",
+      city: "some-city",
       players: [],
       stadium: [],
       updatedAt: new Date(),
     });
 
     const championship = Championship.create({
-      name: 'some-league',
-      season: '23/24',
+      name: "some-league",
+      season: "23/24",
       updatedAt: new Date(),
     });
 
     const stadium = Stadium.create({
-      name: 'some-name',
+      name: "some-name",
       capacity: 10000,
-      location: 'some-location',
-      teamId: 'some-id',
+      location: "some-location",
+      teamId: "some-id",
       updatedAt: new Date(),
     });
 
@@ -40,7 +40,7 @@ describe('Match', () => {
       awayTeam: awayTeam,
       date: new Date(),
       championship: championship,
-      referee: 'some-referee',
+      referee: "some-referee",
       stadium: stadium,
       awayScore: 1,
       homeScore: 2,

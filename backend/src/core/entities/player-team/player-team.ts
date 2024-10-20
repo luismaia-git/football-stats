@@ -1,6 +1,6 @@
-import { UniqueEntityID } from '../unique-entity-id';
-import { Optional } from '../types/optional';
-import { Entity } from '../entity';
+import { UniqueEntityID } from "../unique-entity-id";
+import { Optional } from "../types/optional";
+import { Entity } from "../entity";
 
 export interface PlayerTeamProps {
   playerId: string;
@@ -13,7 +13,7 @@ export interface PlayerTeamProps {
 
 export class PlayerTeam extends Entity<PlayerTeamProps> {
   static create(
-    props: Optional<PlayerTeamProps, 'createdAt'>,
+    props: Optional<PlayerTeamProps, "createdAt">,
     id?: UniqueEntityID,
   ) {
     const entity = new PlayerTeam(
