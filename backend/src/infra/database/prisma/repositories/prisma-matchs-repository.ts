@@ -82,8 +82,8 @@ export class PrismaMatchsRepository implements MatchsRepository {
       },
     });
   }
-  //parei aqui
-  async findById(matchId: string): Promise<Match> {
+
+  async findById(matchId: string): Promise<Match | null> {
     const match = await this.prismaService.match.findUnique({
       where: {
         id: matchId,

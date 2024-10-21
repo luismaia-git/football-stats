@@ -1,4 +1,11 @@
-import { Match as MatchPrisma } from "@prisma/client";
+import {
+  Match as MatchPrisma,
+  Championship as ChampionshipPrisma,
+  Stadium as StadiumPrisma,
+  Performance as PerformancePrisma,
+  Injured as InjuredPrisma,
+  MatchStatistics as MatchStatisticsPrisma,
+} from "@prisma/client";
 import { Championship } from "src/core/entities/championship/championship";
 
 import { MatchStatistics } from "src/core/entities/match-statistics/match-statistics";
@@ -71,58 +78,9 @@ export class PrismaMatchMapper {
 }
 
 type RawMatch = MatchPrisma & {
-  championship: {
-    id: string;
-    name: string;
-    season: string;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-  statistics: {
-    id: string;
-    matchId: string;
-    teamId: string;
-    possessionPercentage: number;
-    goals: number;
-    yellowCards: number;
-    redCards: number;
-    formation: string;
-    captain: string;
-    result: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
-  performance: {
-    id: string;
-    playerId: string;
-    matchId: string;
-    minutesPlayed: number;
-    gols: number;
-    assist: number;
-    yellowCards: number;
-    redCards: number;
-    participationType: ParticipationType;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
-  injured: {
-    id: string;
-    description: string;
-    playerId: string;
-    matchId: string;
-    date: Date;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
-  stadium: {
-    id: string;
-    name: string;
-    location: string;
-    capacity: number;
-    teamId: string;
-    createdAt: Date;
-    updatedAt: Date;
-  };
+  championship: ChampionshipPrisma;
+  statistics: MatchStatisticsPrisma[];
+  performance: PerformancePrisma[];
+  injured: InjuredPrisma[];
+  stadium: StadiumPrisma;
 };
-
-type ParticipationType = "STARTER" | "SUBSTITUTE" | "DID_NOT_PLAY";

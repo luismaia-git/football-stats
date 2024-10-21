@@ -9,9 +9,16 @@ export interface TeamProps {
 }
 
 export class Team extends Entity<TeamProps> {
-  static create(props: Optional<TeamProps, "createdAt">, id?: UniqueEntityID) {
+  static create(
+    props: Optional<TeamProps, "createdAt" | "updatedAt">,
+    id?: UniqueEntityID,
+  ) {
     const team = new Team(
-      { ...props, createdAt: props.createdAt ?? new Date() },
+      {
+        ...props,
+        createdAt: props.createdAt ?? new Date(),
+        updatedAt: props.updatedAt ?? new Date(),
+      },
       id,
     );
     return team;
@@ -45,5 +52,11 @@ export class Team extends Entity<TeamProps> {
 
   public set updatedAt(updatedAt: Date) {
     this.props.updatedAt = updatedAt;
+  }
+
+  public update(props: Partial<TeamProps>): void {
+    if (props.name) this.props.name = props.name;
+    if (props.city) this.props.city = props.city;
+    this.props.updatedAt = new Date();
   }
 }

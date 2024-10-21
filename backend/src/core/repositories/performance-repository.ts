@@ -18,9 +18,6 @@ export abstract class PerformancesRepository {
   // Busca todos os desempenhos em uma partida específica
   abstract findManyByMatchId(matchId: string): Promise<Performance[]>; // Obter todas as performances em uma partida
 
-  // Busca todos os desempenhos de um time específico
-  abstract findManyByTeamId(teamId: string): Promise<Performance[]>; // Obter o desempenho de um time em várias partidas
-
   // Busca desempenhos dentro de um intervalo de datas (por exemplo, para análise de desempenho em um período específico)
   abstract findManyByDateRange(
     startDate: Date,

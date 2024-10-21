@@ -13,11 +13,15 @@ export interface PlayerTeamProps {
 
 export class PlayerTeam extends Entity<PlayerTeamProps> {
   static create(
-    props: Optional<PlayerTeamProps, "createdAt">,
+    props: Optional<PlayerTeamProps, "createdAt" | "updatedAt">,
     id?: UniqueEntityID,
   ) {
     const entity = new PlayerTeam(
-      { ...props, createdAt: props.createdAt ?? new Date() },
+      {
+        ...props,
+        createdAt: props.createdAt ?? new Date(),
+        updatedAt: props.updatedAt ?? new Date(),
+      },
       id,
     );
     return entity;
@@ -64,5 +68,10 @@ export class PlayerTeam extends Entity<PlayerTeamProps> {
 
   public set updatedAt(updatedAt: Date) {
     this.props.updatedAt = updatedAt;
+  }
+
+  public updateUntil(until: Date): void {
+    if (until) this.props.until = until;
+    this.props.updatedAt = new Date();
   }
 }

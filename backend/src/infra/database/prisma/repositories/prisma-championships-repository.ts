@@ -16,10 +16,6 @@ export class PrismaChampionshipsRepository implements ChampionshipsRepository {
       },
     });
 
-    if (championships) {
-      return null;
-    }
-
     return championships.map(PrismaChampionshipMapper.toDomain);
   }
 
@@ -31,12 +27,14 @@ export class PrismaChampionshipsRepository implements ChampionshipsRepository {
     });
   }
 
-  async findById(championshipId: string): Promise<Championship> {
+  async findById(championshipId: string): Promise<Championship | null> {
     const championship = await this.prismaService.championship.findUnique({
       where: {
         id: championshipId,
       },
     });
+
+    if (!championship) return null;
 
     return PrismaChampionshipMapper.toDomain(championship);
   }

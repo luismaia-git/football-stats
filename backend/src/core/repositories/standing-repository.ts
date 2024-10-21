@@ -5,7 +5,7 @@ export abstract class StandingsRepository {
   abstract findById(standingId: string): Promise<Standing | null>;
   abstract save(standing: Standing): Promise<void>;
   abstract findByTeamId(teamId: string): Promise<Standing | null>;
-  abstract findbyChampionshipId(
+  abstract findByChampionshipId(
     championshipId: string,
   ): Promise<Standing | null>;
   abstract findManyByPoints(points: number): Promise<Standing[]>;

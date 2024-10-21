@@ -7,9 +7,9 @@ export abstract class PlayerTeamsRepository {
   abstract save(playerTeam: PlayerTeam): Promise<void>;
   abstract delete(playerTeamId: string): Promise<void>;
 
-  abstract findByPlayerId(playerId: string): Promise<PlayerTeam[]>;
-  abstract findByTeamId(teamId: string): Promise<PlayerTeam[]>;
+  abstract findManyByPlayerId(playerId: string): Promise<PlayerTeam[]>;
+  abstract findManyByTeamId(teamId: string): Promise<PlayerTeam[]>;
 
-  abstract findByFromDate(fromDate: Date): Promise<PlayerTeam[]>;
-  abstract findByUntilDate(untilDate: Date): Promise<PlayerTeam[]>;
+  abstract findManyByFromDate(fromDate: Date): Promise<PlayerTeam[]>;
+  abstract findManyByUntilDate(untilDate: Date): Promise<PlayerTeam[]>;
 }

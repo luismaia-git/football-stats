@@ -9,6 +9,11 @@ import { PrismaTeamMapper } from "../mappers/prisma-team-mapper";
 @Injectable()
 export class PrismaTeamsRepository implements TeamsRepository {
   constructor(private prismaService: PrismaService) {}
+  async findAll(): Promise<Team[]> {
+    const teams = await this.prismaService.team.findMany();
+
+    return teams.map(PrismaTeamMapper.toDomain);
+  }
   async findByStadiumId(stadiumId: string): Promise<Team | null> {
     const team = await this.prismaService.team.findFirst({
       where: {
@@ -19,6 +24,8 @@ export class PrismaTeamsRepository implements TeamsRepository {
         },
       },
     });
+
+    if (!team) return null;
 
     return PrismaTeamMapper.toDomain(team);
   }
@@ -32,10 +39,6 @@ export class PrismaTeamsRepository implements TeamsRepository {
         },
       },
     });
-
-    if (teams) {
-      return null;
-    }
 
     return teams.map(PrismaTeamMapper.toDomain);
   }
@@ -53,6 +56,8 @@ export class PrismaTeamsRepository implements TeamsRepository {
         id: teamId,
       },
     });
+
+    if (!team) return null;
 
     return PrismaTeamMapper.toDomain(team);
   }

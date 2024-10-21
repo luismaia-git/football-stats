@@ -1,4 +1,7 @@
-import { Player as PlayerPrisma } from "@prisma/client";
+import {
+  Player as PlayerPrisma,
+  PlayerTeam as PlayerTeamPrisma,
+} from "@prisma/client";
 import { PlayerTeam } from "src/core/entities/player-team/player-team";
 import { Player } from "src/core/entities/player/player";
 
@@ -23,7 +26,9 @@ export class PrismaPlayerMapper {
     return Player.create(
       {
         name: raw.name,
-        teams: raw.teams,
+        teams: raw.teams.map((playerTeam) =>
+          PlayerTeam.create(playerTeam, new UniqueEntityID(playerTeam.id)),
+        ),
         position: raw.position,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
@@ -33,4 +38,4 @@ export class PrismaPlayerMapper {
   }
 }
 
-type RawPrisma = PlayerPrisma & { teams: PlayerTeam[] };
+type RawPrisma = PlayerPrisma & { teams: PlayerTeamPrisma[] };
