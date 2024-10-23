@@ -6,6 +6,7 @@ import { PlayerTeam } from "../player-team/player-team";
 
 export interface PlayerProps {
   name: string;
+  age?: number;
   position: string;
   createdAt: Date;
   updatedAt: Date;
@@ -14,11 +15,16 @@ export interface PlayerProps {
 
 export class Player extends Entity<PlayerProps> {
   static create(
-    props: Optional<PlayerProps, "createdAt">,
+    props: Optional<PlayerProps, "createdAt" | "updatedAt" | "teams">,
     id?: UniqueEntityID,
   ) {
     const entity = new Player(
-      { ...props, createdAt: props.createdAt ?? new Date() },
+      {
+        ...props,
+        createdAt: props.createdAt ?? new Date(),
+        updatedAt: props.updatedAt ?? new Date(),
+        teams: props.teams ?? [],
+      },
       id,
     );
     return entity;
@@ -37,6 +43,14 @@ export class Player extends Entity<PlayerProps> {
 
   public set position(position: string) {
     this.props.position = position;
+  }
+
+  public get age(): number {
+    return this.props.age;
+  }
+
+  public set age(age: number) {
+    this.props.age = age;
   }
 
   public get createdAt(): Date {

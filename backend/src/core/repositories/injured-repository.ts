@@ -5,6 +5,8 @@ export abstract class InjuredsRepository {
 
   abstract findById(injuredId: string): Promise<Injured | null>;
 
+  abstract findByPlayerId(player: string): Promise<Injured[]>;
+
   abstract save(injured: Injured): Promise<void>;
 
   abstract delete(injuredId: string): Promise<void>;

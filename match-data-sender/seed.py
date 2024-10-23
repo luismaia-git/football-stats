@@ -21,7 +21,7 @@ def scrape_upcoming_matches():
   
   team_urls = [f"https://fbref.com{l}" for l in links]
 
-  print(team_urls[0])
+  print(team_urls)
 
 
   

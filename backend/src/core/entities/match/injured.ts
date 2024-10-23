@@ -5,7 +5,7 @@ import { Entity } from "../entity";
 export interface InjuredProps {
   description: string;
   playerId: string;
-  matchId: string;
+  matchId?: string;
   date: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -13,11 +13,19 @@ export interface InjuredProps {
 
 export class Injured extends Entity<InjuredProps> {
   static create(
-    props: Optional<InjuredProps, "createdAt">,
+    props: Optional<
+      InjuredProps,
+      "createdAt" | "updatedAt" | "matchId" | "date"
+    >,
     id?: UniqueEntityID,
   ) {
     const entity = new Injured(
-      { ...props, createdAt: props.createdAt ?? new Date() },
+      {
+        ...props,
+        createdAt: props.createdAt ?? new Date(),
+        updatedAt: props.updatedAt ?? new Date(),
+        date: props.updatedAt ?? new Date(),
+      },
       id,
     );
     return entity;

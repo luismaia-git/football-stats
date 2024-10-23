@@ -29,6 +29,16 @@ export class PrismaInjuredsRepository implements InjuredsRepository {
     return PrismaInjuredMapper.toDomain(injured);
   }
 
+  async findByPlayerId(playerId: string): Promise<Injured[]> {
+    const injureds = await this.prismaService.injured.findMany({
+      where: {
+        playerId,
+      },
+    });
+
+    return injureds.map(PrismaInjuredMapper.toDomain);
+  }
+
   async create(injured: Injured): Promise<void> {
     const raw = PrismaInjuredMapper.toPrisma(injured);
     await this.prismaService.injured.create({

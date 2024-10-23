@@ -59,12 +59,16 @@ export class PrismaPlayerTeamsRepository implements PlayerTeamsRepository {
     });
   }
 
-  async findById(playerTeamId: string): Promise<PlayerTeam> {
+  async findById(playerTeamId: string): Promise<PlayerTeam | null> {
     const playerTeam = await this.prismaService.playerTeam.findUnique({
       where: {
         id: playerTeamId,
       },
     });
+
+    if (!playerTeam) {
+      return null;
+    }
 
     return PrismaPlayerTeamMapper.toDomain(playerTeam);
   }

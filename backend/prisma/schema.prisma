@@ -148,6 +148,7 @@ model Player {
   teams       PlayerTeam[]
   teamId      String
   position    String
+  age         String
   
   //matchDetails MatchDetails[]
   injuries Injured[]

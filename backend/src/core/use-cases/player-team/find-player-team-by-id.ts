@@ -12,7 +12,7 @@ interface FindPlayerTeamByIdResponse {
 }
 
 @Injectable()
-export class FindTeamById {
+export class FindPlayerTeamById {
   constructor(private playerTeamsRepository: PlayerTeamsRepository) {}
 
   async execute(
