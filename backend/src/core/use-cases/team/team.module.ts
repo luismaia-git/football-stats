@@ -8,5 +8,6 @@ import { DatabaseModule } from "src/infra/database/database.module";
 @Module({
   imports: [DatabaseModule],
   providers: [CreateTeam, FindTeamById, ListTeams, UpdateTeam],
+  exports: [CreateTeam, FindTeamById, ListTeams, UpdateTeam],
 })
 export class TeamModule {}

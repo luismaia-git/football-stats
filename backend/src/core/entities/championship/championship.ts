@@ -11,11 +11,15 @@ export interface ChampionshipProps {
 
 export class Championship extends Entity<ChampionshipProps> {
   static create(
-    props: Optional<ChampionshipProps, "createdAt">,
+    props: Optional<ChampionshipProps, "createdAt" | "updatedAt">,
     id?: UniqueEntityID,
   ) {
     const entity = new Championship(
-      { ...props, createdAt: props.createdAt ?? new Date() },
+      {
+        ...props,
+        createdAt: props.createdAt ?? new Date(),
+        updatedAt: props.updatedAt ?? new Date(),
+      },
       id,
     );
     return entity;

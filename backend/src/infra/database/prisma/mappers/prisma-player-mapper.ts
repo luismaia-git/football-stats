@@ -12,11 +12,8 @@ export class PrismaPlayerMapper {
     return {
       id: player.id.toValue(),
       name: player.name,
-      teamId: player.teams.reduce(
-        (max, playerTeams) => (playerTeams.from > max.from ? playerTeams : max),
-        player.teams[0],
-      ).teamId,
       position: player.position,
+      age: player.age,
       createdAt: player.createdAt,
       updatedAt: player.updatedAt,
     };

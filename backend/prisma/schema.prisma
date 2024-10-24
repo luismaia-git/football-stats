@@ -19,7 +19,7 @@ model Championship { //
   season      String
   standings   Standing[]
   matchs      Match[]
-
+  teams       Team[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -40,15 +40,6 @@ model Standing {
 }
 
 
-// model MatchDetails {
-//   id          String    @id
-//   injuredPlayers Player[]
-//   matchId      String    @unique
-//   Match        Match  @relation(fields: [matchId], references: [id])
-  
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
-// }
 
 model MatchStatistics {
   id        String   @id @default(cuid())
@@ -61,7 +52,6 @@ model MatchStatistics {
   formation    String
   captain String
   result  String
-
   
   match     Match    @relation(fields: [matchId], references: [id])
   team      Team     @relation(fields: [teamId], references: [id])
@@ -82,8 +72,7 @@ model Match {
   awayTeamId  String
   stadium     Stadium  @relation("MatchStadium", fields: [stadiumId], references: [id])
   stadiumId   String
-  referee     String
-  // matchDetails       MatchDetails?    
+  referee     String  
   championship  Championship @relation(fields: [championshipId], references: [id])
   championshipId String
   performance Performance []
@@ -112,6 +101,8 @@ model Team {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  championships Championship[]
 }
 
 model PlayerTeam {
@@ -146,11 +137,9 @@ model Player {
   id          String    @id
   name        String
   teams       PlayerTeam[]
-  teamId      String
   position    String
-  age         String
+  age         Int
   
-  //matchDetails MatchDetails[]
   injuries Injured[]
   performance Performance[]
 

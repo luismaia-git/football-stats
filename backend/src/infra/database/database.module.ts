@@ -6,6 +6,8 @@ import { PlayersRepository } from "src/core/repositories/player-repository";
 import { PrismaPlayersRepository } from "./prisma/repositories/prisma-players-repository";
 import { PlayerTeamsRepository } from "src/core/repositories/player-team-repository";
 import { PrismaPlayerTeamsRepository } from "./prisma/repositories/prisma-player-teams-repository";
+import { ChampionshipsRepository } from "src/core/repositories/championship-repository";
+import { PrismaChampionshipsRepository } from "./prisma/repositories/prisma-championships-repository";
 
 @Module({
   providers: [
@@ -22,7 +24,16 @@ import { PrismaPlayerTeamsRepository } from "./prisma/repositories/prisma-player
       provide: PlayerTeamsRepository,
       useClass: PrismaPlayerTeamsRepository,
     },
+    {
+      provide: ChampionshipsRepository,
+      useClass: PrismaChampionshipsRepository,
+    },
   ],
-  exports: [TeamsRepository, PlayersRepository, PlayerTeamsRepository],
+  exports: [
+    TeamsRepository,
+    PlayersRepository,
+    PlayerTeamsRepository,
+    ChampionshipsRepository,
+  ],
 })
 export class DatabaseModule {}

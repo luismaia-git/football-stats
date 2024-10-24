@@ -5,7 +5,6 @@ describe("Championship", () => {
     const championship = Championship.create({
       name: "premier-league",
       season: "2023-2024",
-      updatedAt: new Date(),
     });
 
     expect(championship).toBeTruthy();
